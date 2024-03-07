@@ -14,7 +14,9 @@ import {faker} from '@faker-js/faker'
 user.firstname = faker.person.firstName();
 
 describe('Order suite', () => {
-    it.only('Order from homepage', () => {
+    it('Order from homepage', () => {
+        cy.intercept('GET', '/api/Products/*').as('Products');
+
         loginPage.visit();
         commonMethods.closeBanner();
         cy.log('User login')
@@ -22,6 +24,7 @@ describe('Order suite', () => {
 
         cy.log('Search for required product and open it in Cart')
         findProduct('Carrot Juice');
+        cy.wait('@Products');
 
         cy.log('Open cart and check added before product is in cart')
         mainPage.openShoppingCart();
